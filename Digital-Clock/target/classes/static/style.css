@@ -1,0 +1,866 @@
+/* --- Global Variables --- */
+:root {
+    --clock-color: #3b82f6; 
+    --clock-font: 'Inter', sans-serif; 
+}
+
+/* Enable smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f5f7; 
+    color: #333;
+    overflow-x: hidden; 
+    transition: background 0.3s ease, color 0.3s ease; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Top Navigation Bar */
+.navbar {
+    position: relative;
+    z-index: 20; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.logo {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #111827;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #6b7280;
+    margin: 0 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-links a:hover { color: #111827; }
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-btn-nav {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #111827;
+}
+
+/* Secondary Toolbar */
+.toolbar {
+    position: relative;
+    z-index: 10; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #374151;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1; 
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn.active {
+    background-color: #dbeafe; 
+    color: #2563eb; 
+    border-color: #dbeafe;
+}
+
+.toggle-group {
+    display: flex;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.toggle-group .btn {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+}
+
+.toggle-group .btn.active {
+    background-color: #dbeafe;
+}
+
+/* --- Dropdown Menu Styles --- */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background-color: #ffffff;
+    min-width: 220px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    z-index: 1000;
+    padding: 8px 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu-right {
+    left: auto;
+    right: 0;
+}
+
+.dropdown-item, .dropdown-item-loc, .dropdown-item-theme, .dropdown-item-color, .dropdown-item-lang {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.dropdown-item:hover, .dropdown-item-loc:hover, .dropdown-item-theme:hover, .dropdown-item-color:hover, .dropdown-item-lang:hover {
+    background-color: #f3f4f6;
+}
+
+.dropdown-item .check, .dropdown-item-loc .check, .dropdown-item-theme .check, .dropdown-item-color .check, .dropdown-item-lang .check {
+    width: 24px;
+    display: inline-block;
+    visibility: hidden;
+    color: #111827;
+    font-weight: bold;
+}
+
+.dropdown-item.active, .dropdown-item-loc.active, .dropdown-item-theme.active, .dropdown-item-color.active, .dropdown-item-lang.active {
+    background-color: #f8fafc;
+}
+
+.dropdown-item.active .check, .dropdown-item-loc.active .check, .dropdown-item-theme.active .check, .dropdown-item-color.active .check, .dropdown-item-lang.active .check {
+    visibility: visible;
+}
+
+/* Main Display Area (handles scale) */
+.clock-container {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease; 
+    padding: 40px 0;
+}
+
+.view-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* --- Shared Time Class --- */
+.time {
+    font-size: 12rem; 
+    font-weight: 600; 
+    color: var(--clock-color); 
+    line-height: 1;
+    letter-spacing: -2px; 
+    transition: font-family 0.2s ease, color 0.3s ease; 
+    display: flex;
+    align-items: baseline; 
+    justify-content: center;
+}
+
+/* --- Analog Clock --- */
+.analog-clock {
+    display: none; 
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid #111; 
+    background-color: #f4f6f8; 
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.clock-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.tick-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+}
+.clock-tick {
+    position: absolute;
+    width: 2px;
+    height: 6px;
+    background-color: var(--clock-color);
+    top: 6px;
+    left: calc(50% - 1px);
+    transition: background-color 0.3s ease;
+}
+
+.clock-num-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    text-align: center;
+}
+.clock-num {
+    display: inline-block;
+    font-size: 2.2rem;
+    color: var(--clock-color);
+    font-family: var(--clock-font);
+    font-weight: 400;
+    margin-top: 25px; 
+    transition: color 0.3s ease, font-family 0.2s ease;
+}
+
+.hour-hand {
+    position: absolute;
+    width: 4px;
+    height: 110px;
+    background-color: var(--clock-color);
+    bottom: 50%;
+    left: calc(50% - 2px);
+    transform-origin: bottom center;
+    border-radius: 4px;
+    z-index: 2;
+    transition: background-color 0.3s ease;
+}
+.min-hand {
+    position: absolute;
+    width: 3px;
+    height: 150px;
+    background-color: var(--clock-color);
+    bottom: 50%;
+    left: calc(50% - 1.5px);
+    transform-origin: bottom center;
+    border-radius: 4px;
+    z-index: 3;
+    transition: background-color 0.3s ease;
+}
+.sec-hand {
+    position: absolute;
+    width: 1.5px;
+    height: 170px;
+    background-color: #ef4444; 
+    bottom: 50%;
+    left: calc(50% - 0.75px);
+    transform-origin: bottom center;
+    z-index: 4;
+}
+.sec-hand::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    background-color: #ef4444;
+    top: 100%; 
+    left: 0;
+}
+.center-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--clock-color);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    transition: background-color 0.3s ease;
+}
+
+/* Shared Date Styling */
+.date {
+    font-size: 3.5rem;
+    font-weight: 400;
+    color: var(--clock-color);
+    margin-top: 10px;
+    letter-spacing: 2px;
+    transition: font-family 0.2s ease, color 0.3s ease;
+}
+
+/* --- Tools Shared --- */
+.tool-title {
+    font-size: 3rem;
+    color: var(--clock-color);
+    font-weight: 600;
+    margin-bottom: 25px;
+    font-family: var(--clock-font);
+}
+
+/* --- Alarm Styling --- */
+.alarm-input-box {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+.alarm-input-box input[type="time"] {
+    padding: 12px 18px;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-family: var(--clock-font);
+    background: #fff;
+    color: #111;
+    transition: border-color 0.3s, background 0.3s, color 0.3s;
+}
+.alarm-input-box .btn {
+    padding: 14px 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.alarm-list {
+    list-style: none;
+    width: 100%;
+    max-width: 400px;
+    padding: 0;
+}
+.alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 1.5rem;
+    color: var(--clock-color);
+    font-family: var(--clock-font);
+    transition: background 0.3s, border-color 0.3s;
+}
+.btn-delete-alarm {
+    color: #ef4444;
+    border-color: #fca5a5;
+    background: #fee2e2;
+}
+.btn-delete-alarm:hover {
+    background: #fecaca;
+}
+
+/* --- Stopwatch Styling --- */
+.stopwatch-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+.stopwatch-buttons .btn {
+    padding: 15px 30px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* ========================================= */
+/* --- INTRO SECTION --- */
+/* ========================================= */
+.intro-section {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 80px 20px 20px;
+}
+
+.intro-section h2 {
+    font-size: 2.2rem;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.intro-section p {
+    font-size: 1.15rem;
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 1.8rem;
+    transition: color 0.3s ease;
+}
+
+/* ========================================= */
+/* --- ABOUT SECTION --- */
+/* ========================================= */
+.about-section {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 20px 20px 40px;
+    scroll-margin-top: 40px; 
+}
+
+.about-section h2 {
+    font-size: 2.2rem;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.feature-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    color: #2563eb;
+    margin: 0 auto 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    color: #0f172a;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* ========================================= */
+/* --- HOW TO USE SECTION --- */
+/* ========================================= */
+.how-to-section {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    scroll-margin-top: 40px;
+}
+
+.how-to-list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.how-to-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.how-to-icon {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    color: #4f46e5; 
+}
+
+.how-to-text h3 {
+    font-size: 1.3rem;
+    color: #0f172a;
+    margin-bottom: 10px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.how-to-text p {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+}
+
+/* ========================================= */
+/* --- TESTIMONIALS SECTION --- */
+/* ========================================= */
+.testimonials-section {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    text-align: center;
+}
+
+.testimonials-section h2 {
+    font-size: 2.2rem;
+    color: #111827;
+    margin-bottom: 3rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+/* FORCE 3 COLUMNS TO KEEP REVIEWS ON ONE LINE */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+@media (max-width: 850px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.testimonial-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 40px 30px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-card h3 {
+    font-size: 1.25rem;
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 20px;
+    color: #fbbf24; 
+}
+
+.star-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.testimonial-card p {
+    font-size: 1.05rem;
+    color: #475569;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+}
+
+/* ========================================= */
+/* --- FOOTER SECTION --- */
+/* ========================================= */
+.site-footer {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    padding: 60px 20px 20px;
+    font-family: 'Inter', sans-serif;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1050px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #334155;
+}
+
+.footer-brand .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.footer-icon {
+    width: 24px;
+    height: 24px;
+    color: #818cf8;
+}
+
+.footer-brand p {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links h4 {
+    font-size: 1.05rem;
+    color: #ffffff;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    max-width: 1050px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 20px;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- FULL SCREEN FIX --- */
+:fullscreen .navbar,
+:fullscreen .toolbar,
+:fullscreen .intro-section,
+:fullscreen .about-section,
+:fullscreen .how-to-section,
+:fullscreen .testimonials-section,
+:fullscreen .site-footer {
+    display: none !important;
+}
+
+:-webkit-full-screen .navbar,
+:-webkit-full-screen .toolbar,
+:-webkit-full-screen .intro-section,
+:-webkit-full-screen .about-section,
+:-webkit-full-screen .how-to-section,
+:-webkit-full-screen .testimonials-section,
+:-webkit-full-screen .site-footer {
+    display: none !important;
+}
+
+/* ========================================= */
+/* --- DARK MODE STYLES --- */
+/* ========================================= */
+body.dark-mode {
+    background-color: #111827 !important; 
+    color: #f9fafb;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .toolbar {
+    background-color: #1f2937;
+    border-bottom: 1px solid #374151;
+}
+
+body.dark-mode .logo,
+body.dark-mode .icon-btn-nav {
+    color: #f9fafb;
+}
+
+body.dark-mode .nav-links a {
+    color: #9ca3af;
+}
+
+body.dark-mode .nav-links a:hover {
+    color: #f9fafb;
+}
+
+body.dark-mode .btn {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+body.dark-mode .btn:hover {
+    background-color: #4b5563;
+}
+
+body.dark-mode .btn.active {
+    background-color: #2563eb; 
+    color: #ffffff; 
+    border-color: #2563eb;
+}
+
+body.dark-mode .toggle-group {
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+}
+
+body.dark-mode .dropdown-item, 
+body.dark-mode .dropdown-item-loc, 
+body.dark-mode .dropdown-item-theme, 
+body.dark-mode .dropdown-item-color, 
+body.dark-mode .dropdown-item-lang {
+    color: #f9fafb;
+}
+
+body.dark-mode .dropdown-item:hover, 
+body.dark-mode .dropdown-item-loc:hover, 
+body.dark-mode .dropdown-item-theme:hover, 
+body.dark-mode .dropdown-item-color:hover, 
+body.dark-mode .dropdown-item-lang:hover {
+    background-color: #374151;
+}
+
+body.dark-mode .dropdown-item.active, 
+body.dark-mode .dropdown-item-loc.active, 
+body.dark-mode .dropdown-item-theme.active, 
+body.dark-mode .dropdown-item-color.active, 
+body.dark-mode .dropdown-item-lang.active {
+    background-color: #4b5563;
+}
+
+body.dark-mode .dropdown-item .check, 
+body.dark-mode .dropdown-item-loc .check, 
+body.dark-mode .dropdown-item-theme .check, 
+body.dark-mode .dropdown-item-color .check, 
+body.dark-mode .dropdown-item-lang .check {
+    color: #f9fafb;
+}
+
+body.dark-mode .analog-clock {
+    background-color: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* Tool Dark Mode Support */
+body.dark-mode .alarm-input-box input[type="time"] {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+body.dark-mode .alarm-item {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+/* Dark Mode Intro Section */
+body.dark-mode .intro-section h2 {
+    color: #f9fafb;
+}
+
+body.dark-mode .intro-section p {
+    color: #d1d5db;
+}
+
+/* Dark Mode Features Grid overrides */
+body.dark-mode .about-section h2 {
+    color: #f9fafb;
+}
+
+body.dark-mode .feature-card {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .feature-card h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .feature-card p {
+    color: #cbd5e1;
+}
+
+/* Dark Mode How to Use overrides */
+body.dark-mode .how-to-text h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .how-to-text p {
+    color: #cbd5e1;
+}
+
+/* Dark Mode Testimonials */
+body.dark-mode .testimonials-section h2 {
+    color: #f9fafb;
+}
+
+body.dark-mode .testimonial-card {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+body.dark-mode .testimonial-card h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .testimonial-card p {
+    color: #d1d5db;
+}
