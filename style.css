@@ -864,3 +864,130 @@ body.dark-mode .testimonial-card h3 {
 body.dark-mode .testimonial-card p {
     color: #d1d5db;
 }
+/* ========================================= */
+/* --- RESPONSIVE / MOBILE STYLES --- */
+/* ========================================= */
+
+/* Tablet & Small Desktop adjustments */
+@media (max-width: 900px) {
+    .time {
+        font-size: 8rem;
+    }
+    .date {
+        font-size: 2.5rem;
+    }
+    .toolbar {
+        flex-wrap: wrap; /* Allows the toolbar buttons to drop to a new line */
+    }
+}
+
+/* Mobile Phone adjustments */
+@media (max-width: 600px) {
+    /* Stack the navigation bar */
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .toolbar {
+        padding: 10px;
+    }
+
+    /* Shrink the buttons slightly */
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Digital Clock - Uses Viewport Width (vw) so it perfectly fits the screen */
+    .time {
+        font-size: 18vw !important; 
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    /* Shrink the AM/PM marker */
+    .time span {
+        font-size: 8vw !important;
+        margin-left: 5px !important;
+    }
+
+    /* Shrink the Stopwatch text */
+    #stopwatch-time {
+        font-size: 15vw !important;
+    }
+
+    /* Scale down the 400px Analog Clock using CSS Transforms */
+    .analog-clock {
+        transform: scale(0.65);
+        margin-top: -50px;
+        margin-bottom: -50px;
+    }
+
+    .date {
+        font-size: 6vw;
+        text-align: center;
+    }
+
+    .tool-title {
+        font-size: 2.2rem;
+    }
+
+    /* Stack Alarm and Stopwatch inputs/buttons */
+    .alarm-input-box {
+        flex-direction: column;
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .alarm-input-box input[type="time"],
+    .alarm-input-box .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .stopwatch-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .stopwatch-buttons .btn {
+        width: 100%;
+    }
+
+    /* Adjust padding and font sizes for text sections below the clock */
+    .intro-section {
+        padding: 40px 20px 20px;
+    }
+    
+    .intro-section h2, 
+    .about-section h2, 
+    .how-to-section h2, 
+    .testimonials-section h2 {
+        font-size: 1.8rem;
+    }
+    
+    /* Center the footer content */
+    .footer-content {
+        text-align: center;
+    }
+    
+    .footer-brand .footer-logo {
+        justify-content: center;
+    }
+    
+    .footer-links {
+        align-items: center;
+    }
+}
